@@ -21,6 +21,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.examples.command.*;
 import com.jagrosh.jmusicbot.commands.admin.*;
 import com.jagrosh.jmusicbot.commands.dj.*;
+import com.jagrosh.jmusicbot.commands.fun.CharCommand;
 import com.jagrosh.jmusicbot.commands.fun.TestCommand;
 import com.jagrosh.jmusicbot.commands.general.*;
 import com.jagrosh.jmusicbot.commands.music.*;
@@ -230,7 +231,8 @@ public class JMusicBot
                         new SetstatusCmd(bot),
                         new ShutdownCmd(bot),
 
-                        new TestCommand(bot)
+                        new TestCommand(bot),
+                        new CharCommand(bot)
                 );
         
         // enable eval if applicable
