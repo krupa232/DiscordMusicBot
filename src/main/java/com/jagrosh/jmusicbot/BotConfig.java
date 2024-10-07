@@ -43,7 +43,7 @@ public class BotConfig
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
             evalEngine;
     private boolean stayInChannel, songInGame, npImages, updatealerts, useEval, dbots;
-    private long owner, maxSeconds, aloneTimeUntilStop;
+    private long owner, maxSeconds, aloneTimeUntilStop, logChannelId;
     private int maxYTPlaylistPages;
     private double skipratio;
     private OnlineStatus status;
@@ -99,6 +99,7 @@ public class BotConfig
             transforms = config.getConfig("transforms");
             skipratio = config.getDouble("skipratio");
             dbots = owner == 113156185389092864L;
+            logChannelId = config.getLong("logChannelId");
             
             // we may need to write a new config file
             boolean write = false;
@@ -380,5 +381,9 @@ public class BotConfig
     public Config getTransforms()
     {
         return transforms;
+    }
+
+    public long getLogChannelId(){
+        return logChannelId;
     }
 }

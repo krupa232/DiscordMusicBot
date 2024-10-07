@@ -16,14 +16,20 @@
 package com.jagrosh.jmusicbot;
 
 import com.jagrosh.jmusicbot.utils.OtherUtil;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -38,10 +44,12 @@ import org.slf4j.LoggerFactory;
 public class Listener extends ListenerAdapter
 {
     private final Bot bot;
+    private final long logChannelId;
     
-    public Listener(Bot bot)
+    public Listener(Bot bot, long logChannelId)
     {
         this.bot = bot;
+        this.logChannelId = logChannelId;
     }
     
     @Override
@@ -122,5 +130,41 @@ public class Listener extends ListenerAdapter
         jda.getTextChannelById(119222314964353025L)
                 .sendMessage("This account is running JMusicBot. Please do not list bot clones on this server, <@"+bot.getConfig().getOwnerId()+">.").complete();
         dbots.leave().queue();
+    }
+
+    @Override
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event)
+    {
+        String user = event.getMember().getUser().getName();
+        String channel = event.getChannelJoined().getName();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm:ss");
+        String time = LocalDateTime.now().format(formatter);
+
+        TextChannel logChannel = event.getGuild().getTextChannelById(logChannelId);
+        if (logChannel != null)
+        {
+            logChannel.sendMessage("**" + user + "**" + " has joined voice channel **" + channel + "** at " + "**" + time + "**").queue();
+        } else {
+            System.out.println("No channel found");
+        }
+    }
+
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event)
+    {
+        String user = event.getMember().getUser().getName();
+        String channel = event.getChannelLeft().getName();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm:ss");
+        String time = LocalDateTime.now().format(formatter);
+
+        TextChannel logChannel = event.getGuild().getTextChannelById(logChannelId);
+        if (logChannel != null)
+        {
+            logChannel.sendMessage("**" + user + "**" + " has left voice channel **" + channel + "** at " + "**" + time + "**").queue();
+        } else {
+            System.out.println("No channel found");
+        }
     }
 }
